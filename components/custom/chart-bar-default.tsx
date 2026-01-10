@@ -1,5 +1,7 @@
 'use client';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
+
+import { TrendingUp } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import {
     Card,
@@ -22,30 +24,33 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export function ChartRadarDefault({ chartData, color }: { chartData: unknown[]; color: string }) {
+export function ChartBarDefault({ chartData, color }: { chartData: unknown[]; color: string }) {
     return (
         <Card>
             <CardHeader className="items-center pb-4 text-lg">
                 <CardTitle>Categories</CardTitle>
                 <CardDescription>URL manipulation categories and their impact</CardDescription>
             </CardHeader>
-            <CardContent className="pb-0">
-                <ChartContainer
-                    config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px]"
-                >
-                    <RadarChart
+            <CardContent>
+                <ChartContainer config={chartConfig}>
+                    <BarChart
+                        accessibilityLayer
                         data={chartData}
-                        className="text-sm"
                         {...{
                             overflow: 'visible',
                         }}
+                        className="text-sm"
                     >
-                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                        <PolarAngleAxis dataKey="category" />
-                        <PolarGrid />
-                        <Radar dataKey="score" fill={`var(${color})`} fillOpacity={0.6} />
-                    </RadarChart>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="category"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                        />
+                        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                        <Bar dataKey="score" fill={`var(${color})`} radius={8} />
+                    </BarChart>
                 </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">

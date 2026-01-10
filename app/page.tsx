@@ -16,11 +16,11 @@ export default function Home() {
         const parsedUrl = parseUrl(url);
         if (!parsedUrl) return;
 
-        router.push(`/check?url=${parsedUrl}`);
+        router.push(`/check?url=${encodeURIComponent(parsedUrl.origin)}`);
     }
 
     return (
-        <div className="flex flex-col min-h-screen items-center justify-center bg-white font-sans dark:bg-zinc-950">
+        <div className="flex flex-col min-h-screen items-center justify-center bg-white dark:bg-zinc-950">
             <main className="flex relative w-full px-4 lg:max-w-1/2 items-center justify-center">
                 <div className="absolute -translate-y-32 flex text-7xl lg:text-8xl font-light text-center">
                     Check URL

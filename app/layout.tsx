@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/custom/theme-provider';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Github, Type } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}>
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="system"
