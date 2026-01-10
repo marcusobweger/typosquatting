@@ -2,6 +2,11 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Github, Type } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { ModeToggle } from '@/components/custom/mode-toggle';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -32,6 +37,22 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
+                    <header className="flex fixed top-0 h-17 z-50 w-full bg-white dark:bg-zinc-950 items-center justify-between px-4">
+                        <div className="flex items-center">
+                            <Link href="/">
+                                <Button variant="ghost" size="icon" aria-label="Typosquatting">
+                                    <Type />
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className="flex h-5 items-center space-x-4">
+                            <Button variant="ghost" size="icon" aria-label="GitHub">
+                                <Github />
+                            </Button>
+                            <Separator orientation="vertical" />
+                            <ModeToggle />
+                        </div>
+                    </header>
                     {children}
                 </ThemeProvider>
             </body>

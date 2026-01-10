@@ -1,36 +1,48 @@
-import { ModeToggle } from '@/components/custom/mode-toggle';
+'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import { Search, Github } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { parseUrl } from '@/lib/utils';
+
 export default function Home() {
+    const [url, setUrl] = useState('');
+    const router = useRouter();
+
+    function onSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
+        const parsedUrl = parseUrl(url);
+        if (!parsedUrl) return;
+
+        router.push(`/check?url=${parsedUrl}`);
+    }
+
     return (
-        <div className="flex flex-col min-h-screen justify-center bg-white font-sans dark:bg-zinc-950">
-            <header className="flex bg-background fixed top-0 h-14 z-50 w-full items-center justify-end px-6">
-                <div className="flex h-5 items-center space-x-4">
-                    <Button variant="ghost" size="icon" aria-label="GitHub">
-                        <Github />
-                    </Button>
-                    <Separator orientation="vertical" />
-                    <ModeToggle />
+        <div className="flex flex-col min-h-screen items-center justify-center bg-white font-sans dark:bg-zinc-950">
+            <main className="flex relative w-full px-4 lg:max-w-1/2 items-center justify-center">
+                <div className="absolute -translate-y-32 flex text-7xl lg:text-8xl font-light text-center">
+                    Check URL
                 </div>
-            </header>
-            <main className="flex flex-1 justify-center">
-                <div className="flex relative w-full max-w-5/12 items-center gap-2">
+                <form className="w-full" onSubmit={onSubmit}>
                     <Input
                         type="url"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
                         placeholder="https://example.com"
-                        className="h-16 rounded-full pr-16 pl-6 text-lg! font-light"
+                        className="h-16 rounded-full pr-16 pl-6 text-lg!"
                         aria-label="Input URL"
                     />
                     <Button
+                        type="submit"
                         variant="default"
                         aria-label="Check"
-                        className="rounded-full h-12 w-12 absolute right-2 top-1/2 -translate-y-1/2"
+                        className="rounded-full h-12 w-12 absolute right-6 top-1/2 -translate-y-1/2"
                     >
                         <Search />
                     </Button>
-                </div>
+                </form>
             </main>
         </div>
     );
