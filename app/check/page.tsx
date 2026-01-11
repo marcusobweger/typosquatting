@@ -12,7 +12,7 @@ export default async function Check({ searchParams }: { searchParams: Promise<{ 
 
     if (!parsedUrl) return;
 
-    const result = await checkUrl(parsedUrl);
+    const result = checkUrl(parsedUrl);
 
     return <CheckClient url={url} result={result} />;
 }

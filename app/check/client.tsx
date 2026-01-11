@@ -12,14 +12,18 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Result } from '@/lib/types';
-import { RotateCcw } from 'lucide-react';
+import { Home, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 function VerdictContent({ verdict }: { verdict: string[] }) {
     if (!verdict || verdict.length === 0) {
-        return <div>No apparent issues were found</div>;
+        return <div className="text-lg">No apparent issues were found</div>;
     }
 
-    return verdict.map((verdict, index) => <div key={index}>{verdict}</div>);
+    return verdict.map((verdict, index) => (
+        <div key={index} className="text-lg pb-1">
+            {verdict}
+        </div>
+    ));
 }
 export default function CheckClient({ url, result }: { url: string; result: Result }) {
     return (
@@ -35,9 +39,9 @@ export default function CheckClient({ url, result }: { url: string; result: Resu
                         <Button
                             variant="default"
                             aria-label="New"
-                            className="flex w-full h-full justify-center items-center rounded-full"
+                            className="flex w-full h-full justify-center items-center rounded-xl"
                         >
-                            <RotateCcw />
+                            <Home />
                         </Button>
                     </Link>
                 </div>

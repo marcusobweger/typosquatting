@@ -1,15 +1,16 @@
-// check URL
-
+import { DOMAINS } from './domains';
+import { PHISHING_KEYWORDS } from './keywords';
 import { ChartData, CheckResult, Verdict } from './types';
+import { distance } from 'fastest-levenshtein';
 
-export function checkProtocol(url: URL) {
+function checkProtocol(url: URL) {
     const protocol = url.protocol;
     if (protocol === 'http:') return { score: 16, verdict: 'Using an insecure protocol' };
     if (protocol !== 'https:') return { score: 6 };
     return { score: 0 };
 }
 
-export function checkLength(url: URL) {
+function checkLength(url: URL) {
     const name = url.hostname;
     if (name.length >= 30) return { score: 20, verdict: 'URL is unusually long' };
     if (name.length >= 20) return { score: 15, verdict: 'URL is unusually long' };
@@ -18,7 +19,7 @@ export function checkLength(url: URL) {
     return { score: 0 };
 }
 
-export function checkSubdomains(url: URL) {
+function checkSubdomains(url: URL) {
     const parts = url.hostname.split('.');
     if (parts.length >= 8) return { score: 25, verdict: 'Contains a large amount of subdomains' };
     if (parts.length >= 6) return { score: 18, verdict: 'Contains a large amount of subdomains' };
@@ -26,14 +27,14 @@ export function checkSubdomains(url: URL) {
     return { score: 0 };
 }
 
-export function checkCharacters(url: URL) {
+function checkCharacters(url: URL) {
     const hostname = url.hostname;
     if (hostname.startsWith('xn--'))
         return { score: 32, verdict: 'URL uses unusual characters not found in ASCII' };
     return { score: 0 };
 }
 
-export function checkRandomness(url: URL) {
+function checkRandomness(url: URL) {
     const hostname = url.hostname.split('.');
     hostname.pop();
     const domain = hostname.toString();
@@ -44,13 +45,78 @@ export function checkRandomness(url: URL) {
     return { score: 0 };
 }
 
-export async function checkUrl(url: URL) {
+function checkHyphens(url: URL) {
+    const hostname = url.hostname;
+
+    const count = (hostname.match(/-/g) || []).length;
+
+    if (count >= 4) return { score: 26, verdict: 'Suspicious amounts of "-" are included' };
+    if (count >= 3) return { score: 21, verdict: 'Suspicious amounts of "-" are included' };
+    if (count >= 2) return { score: 11 };
+    return { score: 0 };
+}
+
+function checkKeywords(url: URL) {
+    const hostname = url.hostname;
+    const keywords: string[] = [];
+
+    PHISHING_KEYWORDS.forEach((keyword) => {
+        if (hostname.includes(`-${keyword}`) || hostname.includes(`${keyword}-`)) {
+            keywords.push(keyword);
+        }
+    });
+
+    if (keywords.length >= 2)
+        return {
+            score: 22,
+            verdict: `Suspicious keywords found: ${keywords.join(', ')}`,
+        };
+
+    if (keywords.length >= 1)
+        return {
+            score: 16,
+            verdict: `Suspicious keyword found: ${keywords[0]}`,
+        };
+
+    return { score: 0 };
+}
+
+function checkLevenshtein(url: URL) {
+    const hostname = url.hostname;
+
+    const cleanFirst = hostname.replace(/^www\./, '');
+
+    const parts = cleanFirst.split('.');
+    const clean = parts.length > 2 ? parts.slice(-2).join('.') : hostname;
+
+    for (const domain of DOMAINS) {
+        if (clean.endsWith(domain)) return { score: 0 };
+
+        const dist = distance(clean, domain);
+
+        if (dist === 1) return { score: 63, verdict: `Extremely similar to: ${domain}` };
+        if (dist === 2) return { score: 54, verdict: `Extremely similar to: ${domain}` };
+        if (dist === 3) return { score: 27, verdict: `Relatively similar to: ${domain}` };
+
+        const domainName = domain.split('.')[0];
+        console.log(clean);
+
+        if (domainName.length >= 2 && cleanFirst.includes(domainName))
+            return { score: 20, verdict: `URL contains: ${domainName}` };
+    }
+
+    return { score: 0 };
+}
+
+export function checkUrl(url: URL) {
     const chartData: ChartData[] = [];
     const verdict: Verdict = [];
     let score: number = 0;
 
-    //
-    // setTimeout(() => {}, 3000);
+    const randomness: CheckResult = checkRandomness(url);
+    score += randomness.score;
+    chartData.push({ category: 'Randomness', score: randomness.score });
+    if (randomness.verdict) verdict.push(randomness.verdict);
 
     const protocol: CheckResult = checkProtocol(url);
     score += protocol.score;
@@ -62,6 +128,11 @@ export async function checkUrl(url: URL) {
     chartData.push({ category: 'Length', score: length.score });
     if (length.verdict) verdict.push(length.verdict);
 
+    const keyword: CheckResult = checkKeywords(url);
+    score += keyword.score;
+    chartData.push({ category: 'Keywords', score: keyword.score });
+    if (keyword.verdict) verdict.push(keyword.verdict);
+
     const subdomain: CheckResult = checkSubdomains(url);
     score += subdomain.score;
     chartData.push({ category: 'Subdomains', score: subdomain.score });
@@ -72,10 +143,15 @@ export async function checkUrl(url: URL) {
     chartData.push({ category: 'Characters', score: character.score });
     if (character.verdict) verdict.push(character.verdict);
 
-    const randomness: CheckResult = checkRandomness(url);
-    score += randomness.score;
-    chartData.push({ category: 'Randomness', score: randomness.score });
-    if (randomness.verdict) verdict.push(randomness.verdict);
+    const hyphen: CheckResult = checkHyphens(url);
+    score += hyphen.score;
+    chartData.push({ category: 'Hyphens', score: hyphen.score });
+    if (hyphen.verdict) verdict.push(hyphen.verdict);
 
-    return { score, chartData, verdict };
+    const levenshtein: CheckResult = checkLevenshtein(url);
+    score += levenshtein.score;
+    chartData.push({ category: 'Distance', score: levenshtein.score });
+    if (levenshtein.verdict) verdict.push(levenshtein.verdict);
+
+    return { score: score >= 100 ? 100 : score, chartData, verdict };
 }
