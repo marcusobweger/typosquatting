@@ -16,7 +16,7 @@ export default function Home() {
         const parsedUrl = parseUrl(url);
         if (!parsedUrl) return;
 
-        router.push(`/check?url=${encodeURIComponent(parsedUrl.origin)}`);
+        router.push(`/check?url=${parsedUrl.origin}`);
     }
 
     return (

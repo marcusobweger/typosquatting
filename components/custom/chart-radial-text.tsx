@@ -34,7 +34,7 @@ export function ChartRadialText({ score, color }: { score: number; color: string
                     <RadialBarChart
                         data={[{ score: score }]}
                         startAngle={0}
-                        endAngle={250}
+                        endAngle={score <= 4 ? 9 : 3.6 * score}
                         innerRadius={80}
                         outerRadius={110}
                         className={`fill-[var(${color})]`}
