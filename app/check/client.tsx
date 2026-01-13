@@ -25,7 +25,6 @@ function VerdictContent({ verdict }: { verdict: string[] }) {
     ));
 }
 export default function CheckClient({ url, result }: { url: string; result: Result }) {
-    console.log('test');
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex flex-col pt-17 pb-4 px-4 min-h-screen gap-4">
