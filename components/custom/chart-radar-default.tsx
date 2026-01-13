@@ -48,7 +48,7 @@ export function ChartRadarDefault({ chartData, color }: { chartData: ChartData[]
                         <Radar
                             dataKey="score"
                             fill={`var(${color})`}
-                            fillOpacity={0.6}
+                            fillOpacity={0.8}
                             amplitude={100}
                             dot
                         />

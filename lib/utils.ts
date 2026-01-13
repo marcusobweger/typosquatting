@@ -19,3 +19,12 @@ export function parseUrl(url: string | null) {
         return;
     }
 }
+
+export async function copyToClipboard(text: string) {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}

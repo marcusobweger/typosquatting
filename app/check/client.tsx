@@ -11,9 +11,11 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Result } from '@/lib/types';
-import { Home } from 'lucide-react';
-import Link from 'next/link';
+import { Check, Copy } from 'lucide-react';
 import { ChartRadarDefault } from '@/components/custom/chart-radar-default';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { copyToClipboard } from '@/lib/utils';
+import { useRef, useState } from 'react';
 function VerdictContent({ verdict }: { verdict: string[] }) {
     if (!verdict || verdict.length === 0) {
         return <div className="text-lg">No apparent issues were found</div>;
@@ -26,24 +28,58 @@ function VerdictContent({ verdict }: { verdict: string[] }) {
     ));
 }
 export default function CheckClient({ url, result }: { url: string; result: Result }) {
+    const [copied, setCopied] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    async function handleCopy() {
+        const success = await copyToClipboard(window.location.href);
+
+        if (success) {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+            setCopied(true);
+            timerRef.current = setTimeout(() => {
+                setCopied(false);
+                timerRef.current = null;
+            }, 2000);
+        }
+    }
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex flex-col pt-17 pb-4 px-4 min-h-screen gap-4">
-                <div className="flex w-full gap-4">
-                    <Card className="flex-1">
-                        <CardContent>
-                            <CardTitle className="text-4xl font-normal">{url}</CardTitle>
-                        </CardContent>
-                    </Card>
-                    <Link href="/" className="flex w-22">
-                        <Button
-                            variant="default"
-                            aria-label="New"
-                            className="flex w-full h-full justify-center items-center rounded-xl"
-                        >
-                            <Home />
-                        </Button>
-                    </Link>
+                <div className="flex gap-4 max-w-full">
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Card className="flex-1 min-w-0">
+                                <CardContent>
+                                    <CardTitle className="text-4xl font-normal truncate">
+                                        {url}
+                                    </CardTitle>
+                                </CardContent>
+                            </Card>
+                        </PopoverTrigger>
+                        <PopoverContent className="max-w-fit bg-primary text-primary-foreground overflow-x-scroll">
+                            <p>{url}</p>
+                        </PopoverContent>
+                    </Popover>
+                    <Popover open={copied}>
+                        <PopoverTrigger asChild>
+                            <div className="w-22 shrink-0">
+                                <Button
+                                    variant="default"
+                                    aria-label="Copy"
+                                    className="flex w-full h-full justify-center items-center rounded-xl"
+                                    onClick={handleCopy}
+                                >
+                                    {copied ? <Check /> : <Copy />}
+                                </Button>
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full bg-primary text-primary-foreground overflow-x-scroll">
+                            <p>Copied!</p>
+                        </PopoverContent>
+                    </Popover>
                 </div>
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
                     <ChartRadialText score={result.score} color={result.color} />

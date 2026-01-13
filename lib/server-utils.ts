@@ -89,20 +89,33 @@ function checkLevenshtein(url: URL) {
     const parts = cleanFirst.split('.');
     const clean = parts.length > 2 ? parts.slice(-2).join('.') : hostname;
 
+    let minDist = 4;
+    let similarDomain;
+    let containsDomain;
+    let contains = false;
+
     for (const domain of DOMAINS) {
         if (clean === domain) return { score: 0 };
 
         const dist = distance(clean, domain);
 
-        if (dist === 1) return { score: 63, verdict: `Extremely similar to: ${domain}` };
-        if (dist === 2) return { score: 54, verdict: `Extremely similar to: ${domain}` };
-        if (dist === 3) return { score: 27 };
+        if (dist < minDist) {
+            minDist = dist;
+            similarDomain = domain;
+        }
 
         const domainName = domain.split('.')[0];
-
-        if (domainName.length >= 2 && cleanFirst.includes(domainName))
-            return { score: 20, verdict: `URL contains: ${domainName}` };
+        if (domainName.length >= 2 && cleanFirst.includes(domainName)) {
+            contains = true;
+            containsDomain = domainName;
+        }
     }
+
+    if (minDist === 1) return { score: 64, verdict: `Extremely similar to: ${similarDomain}` };
+    if (minDist === 2) return { score: 54, verdict: `Extremely similar to: ${similarDomain}` };
+    if (minDist === 3) return { score: 27 };
+
+    if (contains) return { score: 20, verdict: `URL contains: ${containsDomain}` };
 
     return { score: 0 };
 }
