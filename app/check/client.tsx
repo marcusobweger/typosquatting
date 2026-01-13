@@ -1,7 +1,6 @@
 'use client';
 import { ChartBarDefault } from '@/components/custom/chart-bar-default';
 import { ChartRadialText } from '@/components/custom/chart-radial-text';
-import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -11,11 +10,9 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Result } from '@/lib/types';
-import { Check, Copy } from 'lucide-react';
 import { ChartRadarDefault } from '@/components/custom/chart-radar-default';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { copyToClipboard } from '@/lib/utils';
-import { useRef, useState } from 'react';
+import { CopyButton } from '@/components/custom/copy-button';
 function VerdictContent({ verdict }: { verdict: string[] }) {
     if (!verdict || verdict.length === 0) {
         return <div className="text-lg">No apparent issues were found</div>;
@@ -28,23 +25,7 @@ function VerdictContent({ verdict }: { verdict: string[] }) {
     ));
 }
 export default function CheckClient({ url, result }: { url: string; result: Result }) {
-    const [copied, setCopied] = useState(false);
-    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    async function handleCopy() {
-        const success = await copyToClipboard(window.location.href);
-
-        if (success) {
-            if (timerRef.current) {
-                clearTimeout(timerRef.current);
-            }
-            setCopied(true);
-            timerRef.current = setTimeout(() => {
-                setCopied(false);
-                timerRef.current = null;
-            }, 2000);
-        }
-    }
+    console.log('test');
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex flex-col pt-17 pb-4 px-4 min-h-screen gap-4">
@@ -63,23 +44,7 @@ export default function CheckClient({ url, result }: { url: string; result: Resu
                             <p>{url}</p>
                         </PopoverContent>
                     </Popover>
-                    <Popover open={copied}>
-                        <PopoverTrigger asChild>
-                            <div className="w-22 shrink-0">
-                                <Button
-                                    variant="default"
-                                    aria-label="Copy"
-                                    className="flex w-full h-full justify-center items-center rounded-xl"
-                                    onClick={handleCopy}
-                                >
-                                    {copied ? <Check /> : <Copy />}
-                                </Button>
-                            </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full bg-primary text-primary-foreground overflow-x-scroll">
-                            <p>Copied!</p>
-                        </PopoverContent>
-                    </Popover>
+                    <CopyButton />
                 </div>
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
                     <ChartRadialText score={result.score} color={result.color} />
