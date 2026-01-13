@@ -17,6 +17,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from '@/components/ui/chart';
+import { ChartData } from '@/lib/types';
 
 const chartConfig = {
     score: {
@@ -24,7 +25,7 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export function ChartBarDefault({ chartData, color }: { chartData: unknown[]; color: string }) {
+export function ChartBarDefault({ chartData, color }: { chartData: ChartData[]; color: string }) {
     return (
         <Card>
             <CardHeader className="items-center pb-4 text-lg">

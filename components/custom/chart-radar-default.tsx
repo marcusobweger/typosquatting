@@ -15,6 +15,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from '@/components/ui/chart';
+import { ChartData } from '@/lib/types';
 
 const chartConfig = {
     score: {
@@ -22,7 +23,7 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export function ChartRadarDefault({ chartData, color }: { chartData: unknown[]; color: string }) {
+export function ChartRadarDefault({ chartData, color }: { chartData: ChartData[]; color: string }) {
     return (
         <Card>
             <CardHeader className="items-center pb-4 text-lg">
@@ -44,7 +45,13 @@ export function ChartRadarDefault({ chartData, color }: { chartData: unknown[]; 
                         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                         <PolarAngleAxis dataKey="category" />
                         <PolarGrid />
-                        <Radar dataKey="score" fill={`var(${color})`} fillOpacity={0.6} />
+                        <Radar
+                            dataKey="score"
+                            fill={`var(${color})`}
+                            fillOpacity={0.6}
+                            amplitude={100}
+                            dot
+                        />
                     </RadarChart>
                 </ChartContainer>
             </CardContent>

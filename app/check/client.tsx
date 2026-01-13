@@ -1,6 +1,5 @@
 'use client';
 import { ChartBarDefault } from '@/components/custom/chart-bar-default';
-import { ChartRadarDefault } from '@/components/custom/chart-radar-default';
 import { ChartRadialText } from '@/components/custom/chart-radial-text';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,8 +11,9 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Result } from '@/lib/types';
-import { Home, RotateCcw } from 'lucide-react';
+import { Home } from 'lucide-react';
 import Link from 'next/link';
+import { ChartRadarDefault } from '@/components/custom/chart-radar-default';
 function VerdictContent({ verdict }: { verdict: string[] }) {
     if (!verdict || verdict.length === 0) {
         return <div className="text-lg">No apparent issues were found</div>;
@@ -46,8 +46,8 @@ export default function CheckClient({ url, result }: { url: string; result: Resu
                     </Link>
                 </div>
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
-                    <ChartRadialText score={result.score} color="--primary" />
-                    <ChartRadarDefault chartData={result.chartData} color="--primary" />
+                    <ChartRadialText score={result.score} color={result.color} />
+                    <ChartRadarDefault chartData={result.cleanChartData} color={result.color} />
                     <Card>
                         <CardHeader className="items-center pb-0 text-lg">
                             <CardTitle>Verdict</CardTitle>
@@ -65,7 +65,7 @@ export default function CheckClient({ url, result }: { url: string; result: Resu
                         </CardFooter>
                     </Card>
                 </div>
-                <ChartBarDefault chartData={result.chartData} color="--primary" />
+                <ChartBarDefault chartData={result.chartData} color={result.color} />
             </main>
         </div>
     );

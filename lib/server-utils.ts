@@ -40,8 +40,8 @@ function checkRandomness(url: URL) {
     const domain = hostname.toString();
 
     if (domain.length > 12 && !/[aeiou]/i.test(domain))
-        return { score: 12, verdict: 'Domain looks unhuman or machine generated' };
-    if (!/[aeiou]/i.test(domain)) return { score: 7 };
+        return { score: 22, verdict: 'Domain looks unhuman or machine generated' };
+    if (!/[aeiou]/i.test(domain)) return { score: 13 };
     return { score: 0 };
 }
 
@@ -90,16 +90,15 @@ function checkLevenshtein(url: URL) {
     const clean = parts.length > 2 ? parts.slice(-2).join('.') : hostname;
 
     for (const domain of DOMAINS) {
-        if (clean.endsWith(domain)) return { score: 0 };
+        if (clean === domain) return { score: 0 };
 
         const dist = distance(clean, domain);
 
         if (dist === 1) return { score: 63, verdict: `Extremely similar to: ${domain}` };
         if (dist === 2) return { score: 54, verdict: `Extremely similar to: ${domain}` };
-        if (dist === 3) return { score: 27, verdict: `Relatively similar to: ${domain}` };
+        if (dist === 3) return { score: 27 };
 
         const domainName = domain.split('.')[0];
-        console.log(clean);
 
         if (domainName.length >= 2 && cleanFirst.includes(domainName))
             return { score: 20, verdict: `URL contains: ${domainName}` };
@@ -112,46 +111,66 @@ export function checkUrl(url: URL) {
     const chartData: ChartData[] = [];
     const verdict: Verdict = [];
     let score: number = 0;
+    const cleanChartData: ChartData[] = [];
 
     const randomness: CheckResult = checkRandomness(url);
     score += randomness.score;
     chartData.push({ category: 'Randomness', score: randomness.score });
+    if (randomness.score !== 0)
+        cleanChartData.push({ category: 'Randomness', score: randomness.score });
     if (randomness.verdict) verdict.push(randomness.verdict);
 
     const protocol: CheckResult = checkProtocol(url);
     score += protocol.score;
     chartData.push({ category: 'Protocol', score: protocol.score });
+    if (protocol.score !== 0) cleanChartData.push({ category: 'Protocol', score: protocol.score });
+
     if (protocol.verdict) verdict.push(protocol.verdict);
 
     const length: CheckResult = checkLength(url);
     score += length.score;
     chartData.push({ category: 'Length', score: length.score });
+    if (length.score !== 0) cleanChartData.push({ category: 'Length', score: length.score });
     if (length.verdict) verdict.push(length.verdict);
 
     const keyword: CheckResult = checkKeywords(url);
     score += keyword.score;
     chartData.push({ category: 'Keywords', score: keyword.score });
+    if (keyword.score !== 0) cleanChartData.push({ category: 'Keywords', score: keyword.score });
     if (keyword.verdict) verdict.push(keyword.verdict);
 
     const subdomain: CheckResult = checkSubdomains(url);
     score += subdomain.score;
     chartData.push({ category: 'Subdomains', score: subdomain.score });
+    if (subdomain.score !== 0)
+        cleanChartData.push({ category: 'Subdomains', score: subdomain.score });
     if (subdomain.verdict) verdict.push(subdomain.verdict);
 
     const character: CheckResult = checkCharacters(url);
     score += character.score;
     chartData.push({ category: 'Characters', score: character.score });
+    if (character.score !== 0)
+        cleanChartData.push({ category: 'Characters', score: character.score });
     if (character.verdict) verdict.push(character.verdict);
 
     const hyphen: CheckResult = checkHyphens(url);
     score += hyphen.score;
     chartData.push({ category: 'Hyphens', score: hyphen.score });
+    if (hyphen.score !== 0) cleanChartData.push({ category: 'Hyphens', score: hyphen.score });
+
     if (hyphen.verdict) verdict.push(hyphen.verdict);
 
     const levenshtein: CheckResult = checkLevenshtein(url);
     score += levenshtein.score;
     chartData.push({ category: 'Distance', score: levenshtein.score });
+    if (levenshtein.score !== 0)
+        cleanChartData.push({ category: 'Distance', score: levenshtein.score });
     if (levenshtein.verdict) verdict.push(levenshtein.verdict);
 
-    return { score: score >= 100 ? 100 : score, chartData, verdict };
+    let color = '--score-unsafe';
+
+    if (score <= 35) color = '--score-safe';
+    if (score > 35 && score <= 55) color = '--score-medium';
+
+    return { score: score >= 100 ? 100 : score, chartData, verdict, color, cleanChartData };
 }

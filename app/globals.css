@@ -79,6 +79,10 @@
     --sidebar-accent-foreground: oklch(0.145 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    --score-safe: oklch(75.523% 0.25214 142.509);
+    --score-medium: oklch(61.606% 0.17678 44.544);
+    --score-unsafe: oklch(57.697% 0.22593 28.228);
 }
 
 .dark {

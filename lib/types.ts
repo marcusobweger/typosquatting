@@ -5,5 +5,7 @@ export type Result = {
     score: number;
     chartData: ChartData[];
     verdict: Verdict;
+    color: string;
+    cleanChartData: ChartData[];
 };
 export type CheckResult = { score: number; verdict?: string };

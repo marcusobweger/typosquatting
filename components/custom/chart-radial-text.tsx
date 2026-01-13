@@ -37,7 +37,6 @@ export function ChartRadialText({ score, color }: { score: number; color: string
                         endAngle={score <= 4 ? 9 : 3.6 * score}
                         innerRadius={80}
                         outerRadius={110}
-                        className={`fill-[var(${color})]`}
                     >
                         <PolarGrid
                             gridType="circle"
@@ -46,7 +45,12 @@ export function ChartRadialText({ score, color }: { score: number; color: string
                             className="first:fill-muted last:fill-background"
                             polarRadius={[86, 74]}
                         />
-                        <RadialBar dataKey="score" background cornerRadius={10} />
+                        <RadialBar
+                            dataKey="score"
+                            background
+                            cornerRadius={10}
+                            fill={`var(${color})`}
+                        />
                         <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
                             <Label
                                 content={({ viewBox }) => {
