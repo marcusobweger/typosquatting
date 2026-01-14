@@ -13,6 +13,7 @@ import { Result } from '@/lib/types';
 import { ChartRadarDefault } from '@/components/custom/chart-radar-default';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CopyButton } from '@/components/custom/copy-button';
+import { Metadata } from 'next';
 function VerdictContent({ verdict }: { verdict: string[] }) {
     if (!verdict || verdict.length === 0) {
         return <div className="text-lg">No apparent issues were found</div>;
@@ -24,6 +25,11 @@ function VerdictContent({ verdict }: { verdict: string[] }) {
         </div>
     ));
 }
+
+export const metadata: Metadata = {
+    title: 'test',
+    description: 'Test',
+};
 export default function CheckClient({ url, result }: { url: string; result: Result }) {
     return (
         <div className="flex flex-col min-h-screen">
