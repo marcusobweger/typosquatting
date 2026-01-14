@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Github, Type } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { ModeToggle } from '@/components/custom/mode-toggle';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -19,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'Typosquatting',
-    description: 'Typosquatting detection to help avoid phishing links',
+    title: 'Phishing Checker',
+    description: 'URL checking to help avoid phishing links',
 };
 
 export default function RootLayout({
@@ -54,6 +56,8 @@ export default function RootLayout({
                         </div>
                     </header>
                     {children}
+                    <SpeedInsights />
+                    <Analytics />
                 </ThemeProvider>
             </body>
         </html>
