@@ -45,7 +45,7 @@ export default function CheckClient({ url, result }: { url: string; result: Resu
                                 </CardContent>
                             </Card>
                         </PopoverTrigger>
-                        <PopoverContent className="max-w-fit bg-primary text-primary-foreground overflow-x-scroll">
+                        <PopoverContent className="max-w-fit lg:w-full bg-primary text-primary-foreground overflow-x-auto">
                             <p>{url}</p>
                         </PopoverContent>
                     </Popover>

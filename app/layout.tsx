@@ -48,9 +48,14 @@ export default function RootLayout({
                             </Link>
                         </div>
                         <div className="flex h-5 items-center space-x-4">
-                            <Button variant="ghost" size="icon" aria-label="GitHub">
-                                <Github />
-                            </Button>
+                            <Link
+                                href="https://github.com/marcusobweger/typosquatting"
+                                target="_blank"
+                            >
+                                <Button variant="ghost" size="icon" aria-label="GitHub">
+                                    <Github />
+                                </Button>
+                            </Link>
                             <Separator orientation="vertical" />
                             <ModeToggle />
                         </div>

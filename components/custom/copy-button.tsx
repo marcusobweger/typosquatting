@@ -37,7 +37,7 @@ export function CopyButton() {
                     </Button>
                 </div>
             </PopoverTrigger>
-            <PopoverContent className="w-full bg-primary text-primary-foreground overflow-x-scroll">
+            <PopoverContent className="w-full bg-primary text-primary-foreground overflow-x-auto">
                 <p>Copied!</p>
             </PopoverContent>
         </Popover>
