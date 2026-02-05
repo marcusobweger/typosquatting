@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { LoaderCircle, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { parseUrl } from '@/lib/utils';
@@ -9,12 +9,14 @@ import { parseUrl } from '@/lib/utils';
 export default function Home() {
     const [url, setUrl] = useState('');
     const router = useRouter();
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     function onSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         const parsedUrl = parseUrl(url);
         if (!parsedUrl) return;
+        setIsSubmitted(true);
 
         router.push(`/check?url=${parsedUrl.origin}`);
     }
@@ -40,7 +42,7 @@ export default function Home() {
                         aria-label="Check"
                         className="rounded-full h-12 w-12 absolute right-6 top-1/2 -translate-y-1/2"
                     >
-                        <Search />
+                        {isSubmitted ? <LoaderCircle className="animate-spin" /> : <Search />}
                     </Button>
                 </form>
             </main>
