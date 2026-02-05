@@ -23,6 +23,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: 'Phishing Checker',
     description: 'URL checking to help avoid phishing links',
+    other: {
+        'google-site-verification': 'UJJ2tkI97Y4ueVIuphCSxC5PoKwuI5SXDq19S-Ok6_A',
+    },
 };
 
 export default function RootLayout({
