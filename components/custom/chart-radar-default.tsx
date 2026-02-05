@@ -31,10 +31,7 @@ export function ChartRadarDefault({ chartData, color }: { chartData: ChartData[]
                 <CardDescription>URL manipulation categories and their impact</CardDescription>
             </CardHeader>
             <CardContent className="pb-0">
-                <ChartContainer
-                    config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px]"
-                >
+                <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-62.5">
                     <RadarChart
                         data={chartData}
                         className="text-sm"
