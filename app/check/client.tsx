@@ -9,10 +9,12 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Result } from '@/lib/types';
 import { ChartRadarDefault } from '@/components/custom/chart-radar-default';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CopyButton } from '@/components/custom/copy-button';
+import { redirect, useSearchParams } from 'next/navigation';
+import { parseUrl } from '@/lib/utils';
+import { checkUrl } from '@/lib/server-utils';
 function VerdictContent({ verdict }: { verdict: string[] }) {
     if (!verdict || verdict.length === 0) {
         return <div className="text-lg">No apparent issues were found</div>;
@@ -25,7 +27,17 @@ function VerdictContent({ verdict }: { verdict: string[] }) {
     ));
 }
 
-export default function CheckClient({ url, result }: { url: string; result: Result }) {
+export default function CheckClient() {
+    const searchParams = useSearchParams();
+    const url = searchParams.get('url');
+    if (!url) redirect('/');
+
+    const parsedUrl = parseUrl(url);
+
+    if (!parsedUrl) redirect('/');
+
+    const result = checkUrl(parsedUrl);
+
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex flex-col pt-17 pb-4 px-4 min-h-screen gap-4">
