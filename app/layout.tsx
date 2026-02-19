@@ -7,9 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Github, Type } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { ModeToggle } from '@/components/custom/mode-toggle';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Analytics } from '@vercel/analytics/next';
-
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
@@ -64,8 +61,6 @@ export default function RootLayout({
                         </div>
                     </header>
                     {children}
-                    <SpeedInsights />
-                    <Analytics />
                 </ThemeProvider>
             </body>
         </html>
